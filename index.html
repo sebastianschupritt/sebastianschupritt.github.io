@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Todo Liste</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --focus-outline: 2px solid var(--color-primary);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-primary-active: var(--color-teal-800);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-teal-300);
+                --color-warning: var(--color-orange-400);
+                --color-info: var(--color-gray-300);
+                --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+                --color-btn-primary-text: var(--color-slate-900);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+                --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            color: var(--color-text);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--color-text);
+        }
+
+        .input-section {
+            background: var(--color-surface);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--color-card-border);
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            transition: border-color 0.15s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            outline: var(--focus-outline);
+            border-color: var(--color-primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-primary:active {
+            background: var(--color-primary-active);
+        }
+
+        .btn-primary:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-text);
+            margin-left: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-secondary-hover);
+        }
+
+        .todo-item {
+            background: var(--color-surface);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-card-border);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .todo-item:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .todo-checkbox {
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .todo-content {
+            flex: 1;
+        }
+
+        .todo-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--color-text);
+        }
+
+        .todo-description {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .todo-date {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .priority-green {
+            background: rgba(34, 197, 94, 0.15);
+            color: rgb(21, 128, 61);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+        }
+
+        .priority-yellow {
+            background: rgba(245, 158, 11, 0.15);
+            color: rgb(180, 83, 9);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .priority-red {
+            background: rgba(239, 68, 68, 0.15);
+            color: rgb(185, 28, 28);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .priority-green {
+                background: rgba(34, 197, 94, 0.15);
+                color: rgb(74, 222, 128);
+                border: 1px solid rgba(34, 197, 94, 0.25);
+            }
+
+            .priority-yellow {
+                background: rgba(245, 158, 11, 0.15);
+                color: rgb(251, 191, 36);
+                border: 1px solid rgba(245, 158, 11, 0.25);
+            }
+
+            .priority-red {
+                background: rgba(239, 68, 68, 0.15);
+                color: rgb(252, 165, 165);
+                border: 1px solid rgba(239, 68, 68, 0.25);
+            }
+        }
+
+        .todo-completed .todo-title,
+        .todo-completed .todo-description {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--color-error);
+            border: 1px solid var(--color-border);
+            padding: 6px 12px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .btn-delete:hover {
+            background: rgba(var(--color-red-500-rgb), 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .info-item {
+            background: var(--color-surface);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-card-border);
+            margin-bottom: 12px;
+        }
+
+        .info-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .info-content {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            white-space: pre-wrap;
+        }
+
+        .info-actions {
+            margin-top: 12px;
+        }
+
+        .export-section {
+            background: var(--color-surface);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--color-card-border);
+            margin-bottom: 32px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .export-section p {
+            flex: 1 1 100%;
+            margin-bottom: 8px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-export {
+            background: var(--color-success);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn-export:hover {
+            background: var(--color-teal-600);
+        }
+
+        .btn-import {
+            background: var(--color-info);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn-import:hover {
+            opacity: 0.9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .btn-export {
+                color: var(--color-slate-900);
+            }
+            
+            .btn-import {
+                background: var(--color-slate-500);
+                color: var(--color-cream-50);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Smart Todo Liste</h1>
+
+        <div class="export-section">
+            <p>💾 Daten exportieren/importieren für browserübergreifende Nutzung</p>
+            <button class="btn btn-export" onclick="exportData()">📥 Daten exportieren</button>
+            <button class="btn btn-import" onclick="document.getElementById('importFile').click()">📤 Daten importieren</button>
+            <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+        </div>
+
+        <div class="input-section">
+            <h2>Neue Aufgabe mit Fälligkeitsdatum</h2>
+            <div class="form-group">
+                <label for="todoTitle">Titel</label>
+                <input type="text" id="todoTitle" placeholder="z.B. Klausuren korrigieren">
+            </div>
+            <div class="form-group">
+                <label for="todoDescription">Beschreibung (optional)</label>
+                <textarea id="todoDescription" placeholder="Weitere Details zur Aufgabe..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="todoDate">Fälligkeitsdatum</label>
+                <input type="date" id="todoDate" onclick="this.showPicker()">
+            </div>
+            <button class="btn btn-primary" onclick="addTodo()">Aufgabe hinzufügen</button>
+        </div>
+
+        <div class="input-section">
+            <h2>Neue Info ohne Fälligkeitsdatum</h2>
+            <div class="form-group">
+                <label for="infoTitle">Titel</label>
+                <input type="text" id="infoTitle" placeholder="z.B. Wichtige Notizen">
+            </div>
+            <div class="form-group">
+                <label for="infoContent">Inhalt</label>
+                <textarea id="infoContent" placeholder="Informationen, die Sie festhalten möchten..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="addInfo()">Info hinzufügen</button>
+        </div>
+
+        <h2>🎯 Aufgaben mit Fälligkeit</h2>
+        <div id="todoList">
+            <div class="empty-state">Noch keine Aufgaben vorhanden. Fügen Sie Ihre erste Aufgabe hinzu!</div>
+        </div>
+
+        <h2>📝 Infos & Notizen</h2>
+        <div id="infoList">
+            <div class="empty-state">Noch keine Infos vorhanden.</div>
+        </div>
+    </div>
+
+    <script>
+        let todos = [];
+        let infos = [];
+
+        function loadData() {
+            try {
+                const savedTodos = localStorage.getItem('todos');
+                const savedInfos = localStorage.getItem('infos');
+
+                if (savedTodos) {
+                    todos = JSON.parse(savedTodos);
+                }
+
+                if (savedInfos) {
+                    infos = JSON.parse(savedInfos);
+                }
+            } catch (e) {
+                console.error('Fehler beim Laden:', e);
+                todos = [];
+                infos = [];
+            }
+
+            renderTodos();
+            renderInfos();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('todos', JSON.stringify(todos));
+                localStorage.setItem('infos', JSON.stringify(infos));
+            } catch (e) {
+                console.error('Fehler beim Speichern:', e);
+            }
+        }
+
+        function getPriorityClass(dueDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const due = new Date(dueDate);
+            due.setHours(0, 0, 0, 0);
+            
+            const diffTime = due - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 7) {
+                return 'priority-red';
+            } else if (diffDays <= 21) {
+                return 'priority-yellow';
+            } else {
+                return 'priority-green';
+            }
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('de-DE', options);
+        }
+
+        function addTodo() {
+            const title = document.getElementById('todoTitle').value.trim();
+            const description = document.getElementById('todoDescription').value.trim();
+            const date = document.getElementById('todoDate').value;
+
+            if (!title || !date) {
+                alert('Bitte geben Sie mindestens einen Titel und ein Fälligkeitsdatum ein.');
+                return;
+            }
+
+            todos.push({
+                id: Date.now(),
+                title,
+                description,
+                date,
+                completed: false
+            });
+
+            document.getElementById('todoTitle').value = '';
+            document.getElementById('todoDescription').value = '';
+            document.getElementById('todoDate').value = '';
+
+            saveData();
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                saveData();
+                renderTodos();
+            }
+        }
+
+        function deleteTodo(id) {
+            if (confirm('Möchten Sie diese Aufgabe wirklich löschen?')) {
+                todos = todos.filter(t => t.id !== id);
+                saveData();
+                renderTodos();
+            }
+        }
+
+        function renderTodos() {
+            const todoList = document.getElementById('todoList');
+            
+            if (todos.length === 0) {
+                todoList.innerHTML = '<div class="empty-state">Noch keine Aufgaben vorhanden. Fügen Sie Ihre erste Aufgabe hinzu!</div>';
+                return;
+            }
+
+            const sortedTodos = [...todos].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            todoList.innerHTML = sortedTodos.map(todo => `
+                <div class="todo-item ${todo.completed ? 'todo-completed' : ''}">
+                    <input type="checkbox" 
+                           class="todo-checkbox" 
+                           ${todo.completed ? 'checked' : ''} 
+                           onchange="toggleTodo(${todo.id})">
+                    <div class="todo-content">
+                        <div class="todo-title">${escapeHtml(todo.title)}</div>
+                        ${todo.description ? `<div class="todo-description">${escapeHtml(todo.description)}</div>` : ''}
+                        <div class="todo-date ${getPriorityClass(todo.date)}">
+                            📅 ${formatDate(todo.date)}
+                        </div>
+                        <button class="btn btn-delete" onclick="deleteTodo(${todo.id})">Löschen</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addInfo() {
+            const title = document.getElementById('infoTitle').value.trim();
+            const content = document.getElementById('infoContent').value.trim();
+
+            if (!title || !content) {
+                alert('Bitte geben Sie einen Titel und Inhalt ein.');
+                return;
+            }
+
+            infos.push({
+                id: Date.now(),
+                title,
+                content
+            });
+
+            document.getElementById('infoTitle').value = '';
+            document.getElementById('infoContent').value = '';
+
+            saveData();
+            renderInfos();
+        }
+
+        function deleteInfo(id) {
+            if (confirm('Möchten Sie diese Info wirklich löschen?')) {
+                infos = infos.filter(i => i.id !== id);
+                saveData();
+                renderInfos();
+            }
+        }
+
+        function renderInfos() {
+            const infoList = document.getElementById('infoList');
+            
+            if (infos.length === 0) {
+                infoList.innerHTML = '<div class="empty-state">Noch keine Infos vorhanden.</div>';
+                return;
+            }
+
+            infoList.innerHTML = infos.map(info => `
+                <div class="info-item">
+                    <div class="info-title">${escapeHtml(info.title)}</div>
+                    <div class="info-content">${escapeHtml(info.content)}</div>
+                    <div class="info-actions">
+                        <button class="btn btn-delete" onclick="deleteInfo(${info.id})">Löschen</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function exportData() {
+            const data = {
+                todos: todos,
+                infos: infos,
+                exportDate: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `todo-liste-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(link.href);
+            alert('Daten erfolgreich exportiert! Die Datei wurde heruntergeladen.');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.todos && Array.isArray(data.todos)) {
+                        todos = data.todos;
+                    }
+                    
+                    if (data.infos && Array.isArray(data.infos)) {
+                        infos = data.infos;
+                    }
+                    
+                    saveData();
+                    renderTodos();
+                    renderInfos();
+                    
+                    alert('Daten erfolgreich importiert!');
+                } catch (error) {
+                    alert('Fehler beim Importieren: Ungültige Datei.');
+                    console.error('Import-Fehler:', error);
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
+
